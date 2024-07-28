@@ -8,6 +8,4 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Datos(
         @JsonAlias("data") List<DatosAnime> resultados
-
-        ){
-}
+        ){ }

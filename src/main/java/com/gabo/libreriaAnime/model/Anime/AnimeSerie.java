@@ -1,97 +1,182 @@
 package com.gabo.libreriaAnime.model.Anime;
 
 import com.gabo.libreriaAnime.dto.serie.infoSerie.*;
-import com.gabo.libreriaAnime.dto.serie.infoSerie.date.FechaDatos;
-import com.gabo.libreriaAnime.dto.serie.infoSerie.images.ImagesDatos;
-import com.gabo.libreriaAnime.dto.serie.infoSerie.video.VideoDatos;
+
+import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.OptionalDouble;
 
+@Entity
+@Table(
+        name = "animeSeries"
+)
 public class AnimeSerie {
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
+    private Long Id;
+    private Integer idAnime;
+    @OneToOne(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private  Imagenes images;
+    @OneToOne(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Videos urlVideo;
+    @Column(
+            unique = true
+    )
+    private  String titulo;
 
-    private final String idAnime;
+    private String tituloIngles;
 
-    private final List<ImagesDatos> images;
+    private String tituloJapones;
 
-    private final List<VideoDatos> urlVideo;
+    private String tipo;
 
-    private final String titulo;
+    private String fuente;
 
-    private final String tituloIngles;
+    private Integer nEpisodios;
 
-    private final String tituloJapones;
+    private String status;
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Fechas> fecha;
 
-    private final String tipo;
+    private String duracion;
 
-    private final String fuente;
+    private String rating;
 
-    private final Integer nEpisodios;
+    private  Double puntaje;
+    @Column(
+            columnDefinition = "TEXT"
+    )
+    private String sinopsis;
 
-    private final String status;
+    private String temporada;
 
-    private final List<FechaDatos> fecha;
-
-    private final String duracion;
-
-    private final String rating;
-
-    private final Double puntaje;
-
-    private final String sinopsis;
-
-    private final String temporada;
-
-    private final Integer ano;
-
-    private final List<ProductoresDatos> productores;
-
-    private final List<LicenciadoDatos> licenciado;
-
-    private final List<StudiosDatos> studio;
-
+    private Integer ano;
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Productores> productores;
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Licenciado> licenciado;
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Studios> studio;
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "anime_genero",
+            joinColumns = {@JoinColumn(
+                    name = "anime_id"
+            )},
+            inverseJoinColumns = {@JoinColumn(
+                    name = "genero_id"
+            )}
+    )
     private List<Categoria> genero;
+    @OneToMany(
+            mappedBy = "anime",
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
     private List<Episodios> episodios;
+
+public AnimeSerie(){
+
+}
 
     public AnimeSerie(DatosAnime datosAnime) {
         this.idAnime = datosAnime.idAnime();
-        this.images = datosAnime.images();
-        this.urlVideo = datosAnime.urlVideo();
         this.titulo = datosAnime.titulo();
         this.tituloIngles = datosAnime.tituloIngles();
         this.tituloJapones = datosAnime.tituloJapones();
         this.tipo = datosAnime.tipo();
         this.fuente = datosAnime.fuente();
         this.status = datosAnime.status();
-        this.fecha = datosAnime.fecha();
         this.duracion = datosAnime.duracion();
         this.rating = datosAnime.rating();
         this.puntaje = OptionalDouble.of(Double.valueOf(datosAnime.puntaje())).orElse(0.0);
         this.sinopsis = datosAnime.sinopsis();
         this.temporada = datosAnime.temporada();
         this.ano = datosAnime.ano();
-        this.productores = datosAnime.productores();
-        this.licenciado = datosAnime.licenciado();
-        this.studio = datosAnime.studio();
         this.nEpisodios = datosAnime.nEpisodios();
+    }
+
+    public AnimeSerie(Videos urlVideo, Imagenes images, List<Fechas> fecha, List<Studios> studio, List<Licenciado> licenciado, List<Productores> productores) {
+        this.urlVideo = urlVideo;
+        this.images = images;
+        this.fecha = fecha;
+        this.studio = studio;
+        this.licenciado = licenciado;
+        this.productores = productores;
+    }
+
+
+
+    public Imagenes getImages() {
+        return images;
+    }
+
+    public void setImages(Imagenes images) {
+        this.images = images;
+    }
+
+    public Videos getUrlVideo() {
+        return urlVideo ;
+    }
+
+    public void setUrlVideo(Videos urlVideo) {
+        this.urlVideo = urlVideo;
+    }
+
+    public List<Fechas> getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(List<Fechas> fecha) {
+        this.fecha = fecha;
+    }
+
+    public List<Productores> getProductores() {
+        return productores;
+    }
+
+    public void setProductores(List<Productores> productores) {
+        this.productores = productores;
+    }
+
+    public List<Licenciado> getLicenciado() {
+        return licenciado;
+    }
+
+    public void setLicenciado(List<Licenciado> licenciado) {
+        this.licenciado = licenciado;
+    }
+
+    public List<Studios> getStudio() {
+        return studio;
+    }
+
+    public void setStudio(List<Studios> studio) {
+        this.studio = studio;
     }
 
     public void Categoria(List<Categoria> genero) {
         this.genero = genero;
     }
 
+    public Long getId() {
+        return Id;
+    }
 
-    public String getIdAnime() {
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public Integer getIdAnime() {
         return idAnime;
     }
 
-    public List<ImagesDatos> getImages() {
-        return images;
-    }
-
-    public List<VideoDatos> getUrlVideo() {
-        return urlVideo;
-    }
 
     public String getTitulo() {
         return titulo;
@@ -121,10 +206,6 @@ public class AnimeSerie {
         return status;
     }
 
-    public List<FechaDatos> getFecha() {
-        return fecha;
-    }
-
     public String getDuracion() {
         return duracion;
     }
@@ -149,18 +230,6 @@ public class AnimeSerie {
         return ano;
     }
 
-    public List<ProductoresDatos> getProductores() {
-        return productores;
-    }
-
-    public List<LicenciadoDatos> getLicenciado() {
-        return licenciado;
-    }
-
-    public List<StudiosDatos> getStudio() {
-        return studio;
-    }
-
     public List<Categoria> getGenero() {
         return genero;
     }
@@ -179,5 +248,34 @@ public class AnimeSerie {
             e.setAnime(this);
         });
         this.episodios = episodios;
+    }
+
+    @Override
+    public String toString() {
+        return "----------------------------------------------------------------------\n" +
+                "AnimeSerie{" +
+                "\nidAnime=" + idAnime +
+                ",\nimages=" + images +
+                ",\nurlVideo=" + urlVideo +
+                ",\ntitulo='" + titulo  +
+                ", tituloIngles='" + tituloIngles  +
+                ", tituloJapones='" + tituloJapones +
+                ",\ntipo='" + tipo  +
+                ",\nfuente='" + fuente  +
+                ",\nnEpisodios=" + nEpisodios +
+                ",\nstatus='" + status +
+                ",\nfecha=" + fecha +
+                ",\nduracion='" + duracion +
+                ",\nrating='" + rating +
+                ",\npuntaje=" + puntaje +
+                ",\ntemporada='" + temporada +
+                ",\naño=" + ano +
+                ",\nproductores=" + productores +
+                ",\nlicenciado=" + licenciado +
+                ",\nstudio=" + studio +
+                ",\ngenero=" + genero +
+                ",\nepisodios=" + episodios +
+                ",\nsinopsis='" + sinopsis +
+                "--------------------------------------------------------------------";
     }
 }

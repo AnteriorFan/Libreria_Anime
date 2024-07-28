@@ -1,5 +1,7 @@
 package com.gabo.libreriaAnime.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -8,6 +10,7 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class ConsumoAPI {
     //Se utiliza la clase Logger de Java para registrar mensajes de información, advertencia y error.
     //          Esto es útil para el seguimiento y diagnóstico de problemas.
@@ -19,20 +22,22 @@ public class ConsumoAPI {
 
     public ConsumoAPI() {
         this.client = HttpClient.newHttpClient();
+
     }
 
     //Uso de Optional: Para manejar el caso donde la respuesta sea null de una manera más segura.
-    public Optional<String> obtenerDatos(String url) {
+    public String obtenerDatos(String url) {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+        System.out.println(request);
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // Se verifica si la respuesta HTTP tiene un código de estado 200 (OK) antes de devolver el cuerpo de la respuesta.
             // Si no es así, se registra una advertencia y se devuelve un Optional.empty().
             if (response.statusCode() == 200) {
-                return Optional.ofNullable(response.body());
+                return response.body();
             } else {
                 logger.log(Level.WARNING, "Solicitud fallida. Código de estado: " + response.statusCode());
-                return Optional.empty();
+                return null;
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error de IO al enviar la solicitud", e);
@@ -43,4 +48,5 @@ public class ConsumoAPI {
             throw new RuntimeException("Solicitud interrumpida", e);
         }
     }
+
 }

@@ -1,12 +1,13 @@
 package com.gabo.libreriaAnime.dto.serie.infoSerie.images;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record ImagesDatos(
-        @JsonAlias("jpg") List<ImagesDetailsDatos> formato
-) {
-}
+        @JsonProperty("webp")
+        ImagesDetailsDatos formato
+) { }

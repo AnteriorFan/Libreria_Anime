@@ -1,11 +1,23 @@
 package com.gabo.libreriaAnime.model.Anime;
 
 import com.gabo.libreriaAnime.dto.serie.infoSerie.Genero;
+import jakarta.persistence.*;
 
+
+@Entity
+@Table(
+        name = "generos"
+)
 public class Categoria {
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
     private Long id;
+    @Enumerated(EnumType.STRING)
     private Genero categoria;
 
+    public Categoria(){ }
     public Categoria(Genero categoria) {
         this.categoria = categoria;
     }

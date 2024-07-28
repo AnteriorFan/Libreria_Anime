@@ -7,5 +7,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public record VideoDatos(
         @JsonAlias("youtube_id") String idyoutube,
         @JsonAlias("url") String url
-) {
-}
+) { }

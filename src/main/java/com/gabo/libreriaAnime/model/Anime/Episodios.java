@@ -1,14 +1,30 @@
 package com.gabo.libreriaAnime.model.Anime;
 
 import com.gabo.libreriaAnime.dto.serie.episodes.DatosEpisodesResult;
+import jakarta.persistence.*;
 
+@Entity
+@Table(
+        name = "episodios"
+)
 public class Episodios {
-
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
+    private Long Id;
     private Integer idEpisode;
     private String titulo;
     private String tituloJapones;
     private Double calificacionEpisode;
+    @ManyToOne
+    @JoinColumn(
+            name = "anime_id"
+    )
     private AnimeSerie anime;
+
+    public Episodios() {
+    }
 
     public Episodios(DatosEpisodesResult d, AnimeSerie a) {
         this.idEpisode = d.idEpisode();
@@ -32,6 +48,7 @@ public class Episodios {
                 ".\ncalificacionEpisode= " + calificacionEpisode +
                 ".\nanime= " + (this.anime != null ? this.anime.getTitulo() : "null");
     }
+
 
     public Integer getIdEpisode() {
         return idEpisode;
