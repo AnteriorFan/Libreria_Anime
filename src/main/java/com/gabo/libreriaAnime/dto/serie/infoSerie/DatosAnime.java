@@ -38,27 +38,27 @@ public record DatosAnime(
     @Override
     public String toString() {
         return "DatosAnime{" +
-                "\nidAnime=" + idAnime +
-                ",\nImages=" + images +
-                ",\nURL_Video=" + urlVideo +
-                ",\nTitulo='" + titulo + '\'' +
-                ", tituloIngles='" + tituloIngles + '\'' +
-                ", tituloJapones='" + tituloJapones + '\'' +
-                ",\nTipo='" + tipo + '\'' +
-                ",\nFuente='" + fuente + '\'' +
-                ",\nNEpisodios=" + nEpisodios +
-                ",\nStatus='" + status + '\'' +
-                ",\nFecha=" + fecha +
-                ",\nDuracion='" + duracion + '\'' +
-                ",\nRating='" + rating + '\'' +
-                ",\nPuntaje=" + puntaje +
-                ",\nTemporada='" + temporada + '\'' +
-                ",\nAño=" + ano +
-                ",\nProductores=" + productores +
-                ",\nLicenciado=" + licenciado +
-                ",\nStudio=" + studio +
-                ",\nGenero=" + genero +
-                ",\nSinopsis='" + sinopsis + '\'' +
+                "\nidAnime= " + idAnime +
+                "\nImages= " + images +
+                "\nURL_Video= " + urlVideo +
+                "\nTitulo= " + titulo +
+                ", tituloIngles= " + tituloIngles +
+                ", tituloJapones= " + tituloJapones +
+                "\nTipo= " + tipo +
+                "\nFuente= " + fuente +
+                "\nNEpisodios= " + nEpisodios +
+                "\nStatus= " + status +
+                "\nFecha= " + fecha +
+                "\nDuracion= " + duracion +
+                "\nRating= " + rating +
+                "\nPuntaje= " + puntaje +
+                "\nTemporada= " + temporada +
+                "\nAño= " + ano +
+                "\nProductores= " + productores +
+                "\nLicenciado= " + licenciado +
+                "\nStudio= " + studio +
+                "\nGenero= " + genero +
+                "\nSinopsis= " + sinopsis +
                 '}';
     }
 }

@@ -12,7 +12,7 @@ public class Videos {
     private Long id;
     private String url;
     private String idyoutube;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "anime_id")
     private AnimeSerie anime;
     public Videos(){}
@@ -21,6 +21,11 @@ public class Videos {
       this.idyoutube = videoDatos.idyoutube();
     }
 
+    @Override
+    public String toString() {
+        return
+                "URL= " + url;
+    }
 
     public String getIdyoutube() {
         return idyoutube;
@@ -36,5 +41,21 @@ public class Videos {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public AnimeSerie getAnime() {
+        return anime;
+    }
+
+    public void setAnime(AnimeSerie anime) {
+        this.anime = anime;
     }
 }

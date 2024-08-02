@@ -38,7 +38,7 @@ public class AnimeSerie {
     private Integer nEpisodios;
 
     private String status;
-    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Fechas> fecha;
 
     private String duracion;
@@ -54,11 +54,11 @@ public class AnimeSerie {
     private String temporada;
 
     private Integer ano;
-    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Productores> productores;
-    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Licenciado> licenciado;
-    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "anime", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Studios> studio;
     @ManyToMany(
             fetch = FetchType.EAGER
@@ -85,7 +85,7 @@ public AnimeSerie(){
 
 }
 
-    public AnimeSerie(DatosAnime datosAnime) {
+    public AnimeSerie(DatosAnime datosAnime ) {
         this.idAnime = datosAnime.idAnime();
         this.titulo = datosAnime.titulo();
         this.tituloIngles = datosAnime.tituloIngles();
@@ -102,7 +102,7 @@ public AnimeSerie(){
         this.nEpisodios = datosAnime.nEpisodios();
     }
 
-    public AnimeSerie(Videos urlVideo, Imagenes images, List<Fechas> fecha, List<Studios> studio, List<Licenciado> licenciado, List<Productores> productores) {
+    public void DatosExtras(Videos urlVideo, Imagenes images, List<Fechas> fecha, List<Studios> studio, List<Licenciado> licenciado, List<Productores> productores) {
         this.urlVideo = urlVideo;
         this.images = images;
         this.fecha = fecha;
@@ -254,28 +254,30 @@ public AnimeSerie(){
     public String toString() {
         return "----------------------------------------------------------------------\n" +
                 "AnimeSerie{" +
-                "\nidAnime=" + idAnime +
-                ",\nimages=" + images +
-                ",\nurlVideo=" + urlVideo +
-                ",\ntitulo='" + titulo  +
-                ", tituloIngles='" + tituloIngles  +
-                ", tituloJapones='" + tituloJapones +
-                ",\ntipo='" + tipo  +
-                ",\nfuente='" + fuente  +
-                ",\nnEpisodios=" + nEpisodios +
-                ",\nstatus='" + status +
-                ",\nfecha=" + fecha +
-                ",\nduracion='" + duracion +
-                ",\nrating='" + rating +
-                ",\npuntaje=" + puntaje +
-                ",\ntemporada='" + temporada +
-                ",\naño=" + ano +
-                ",\nproductores=" + productores +
-                ",\nlicenciado=" + licenciado +
-                ",\nstudio=" + studio +
-                ",\ngenero=" + genero +
-                ",\nepisodios=" + episodios +
-                ",\nsinopsis='" + sinopsis +
-                "--------------------------------------------------------------------";
+                "\nidAnime= " + idAnime +
+                "\nimages= " + images +
+                "\nurlVideo= " + urlVideo +
+                "\ntitulo= " + titulo  +
+                ", tituloIngles= " + tituloIngles  +
+                ", tituloJapones= " + tituloJapones +
+                "\ntipo= " + tipo  +
+                "\nfuente= " + fuente  +
+                "\nnEpisodios= " + nEpisodios +
+                "\nstatus= " + status +
+                "\nfecha= " + fecha +
+                "\nduracion= " + duracion +
+                "\nrating= " + rating +
+                "\npuntaje= " + puntaje +
+                "\ntemporada= " + temporada +
+                "\naño= " + ano +
+                "\nproductores= " + productores +
+                "\nlicenciado= " + licenciado +
+                "\nstudio= " + studio +
+                "\ngenero= " + genero +
+                "\nepisodios= " + episodios +
+                "\nsinopsis= " + sinopsis +
+                "}" +
+
+                "\n--------------------------------------------------------------------";
     }
 }

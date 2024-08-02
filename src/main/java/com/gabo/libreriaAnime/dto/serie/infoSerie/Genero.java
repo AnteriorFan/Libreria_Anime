@@ -50,6 +50,7 @@ public enum Genero {
     TRAGEDY("Tragedy", "Tragedias"),
     GAME("Game", "Juegos"),
     MagicalSexShift("Magical Sex Shift", "Magical Sex Shift"),
+    AwardWinning("Award Winning", "Award Winning"),
     CYBERPUNK("Cyberpunk", "Cyberpunk");
 
     private final String categoriaAnime;

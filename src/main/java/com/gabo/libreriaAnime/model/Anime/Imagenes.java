@@ -24,8 +24,14 @@ public class Imagenes {
        this.largeImageUrl = imagesDetailsDatos.largeImageUrl();
    }
 
+    @Override
+    public String toString() {
+        return
+                "imageUrl= " + imageUrl;
+    }
+
     public String getImageUrl() {
-        return imageUrl != null ? imageUrl : "N/A";
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
@@ -48,4 +54,19 @@ public class Imagenes {
         this.largeImageUrl = largeImageUrl;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public AnimeSerie getAnime() {
+        return anime;
+    }
+
+    public void setAnime(AnimeSerie anime) {
+        this.anime = anime;
+    }
 }
