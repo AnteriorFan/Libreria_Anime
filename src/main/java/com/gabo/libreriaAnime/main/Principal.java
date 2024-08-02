@@ -24,6 +24,8 @@ public class Principal {
     private final SerieRepository repository;
     private final GeneroRepository generoRepository;
     private List<AnimeSerie> a;
+
+    // Uso de @Autowired facilita la gestión de depedencias por medio del contructor
     @Autowired
     public Principal(ObjectMapper objectMapper, SerieRepository repository, GeneroRepository generoRepository) {
         this.repository = repository;
@@ -76,6 +78,10 @@ public class Principal {
                 case 3:
                     showSFound();
                     break;
+
+                case 4:
+                    foundSGenere();
+                    break;
                 case 0:
                     System.out.println("Cerrando aplicación ...");
                     break;
@@ -95,6 +101,7 @@ public class Principal {
         return datos != null && datos.resultados() != null && !datos.resultados().isEmpty() ? datos.resultados().get(0) : null;
     }
 
+    //BUSCA LA SERIE Y HACE EL PROCEDIMIENTO DE GUARAS EN LA BASE DE DATOS
     private void buscarAnime() {
         DatosAnime datos = this.getDatosSerie();
         if (datos != null){
@@ -151,15 +158,54 @@ public class Principal {
             System.out.println("No se encontraron los resultados");
         }
     }
+
+    //BUSCA LOS EPISODIOS POR MEDIO DE LAS SERIES BUSCADAS
     private void buscarEpisodio() {
 
     }
 
+    //DEVUELVE LAS SERIES QUE FUERON BUSCADAS Y GUARDADAS POR LA BASE DE DATOS
     private void showSFound(){
-        a = repository.findAll();
-        a.stream().sorted(Comparator.comparing(ones ->
-                ones.getGenero() != null && !ones.getGenero().isEmpty() ? ones.getGenero().get(0).toString() : ""))
+        List<AnimeSerie> series = repository.findAll();
+        if (series.isEmpty()) {
+            System.out.println("No hay series registradas.");
+            return;
+        }
+        // Ordenar por género
+        series.stream()
+                .sorted(Comparator.comparing(anime ->
+                        anime.getGenero() != null && !anime.getGenero().isEmpty()
+                                ? anime.getGenero().get(0).toString() : ""))
                 .forEach(System.out::println);
-
     }
+
+    //BUSQUEDA DE SERIES POR GENERO
+    public void foundSGenere() {
+        System.out.println("Escribe el género/categoría de la serie");
+        String genero = teclado.nextLine();
+        Genero categoria;
+
+        //Usa un try-catch para buscar los genero y so no encuantra el genero saldra un mesnaje
+        try {
+            categoria = Genero.fromEspanol(genero);
+        } catch (IllegalArgumentException e) {
+            try {
+                categoria = Genero.fromString(genero);
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Categoría no encontrada.");
+                return;
+            }
+        }
+
+        // Se crea una lista para almacenar las series buscadas
+        List<AnimeSerie> animes = repository.findByCategoriaGenero(categoria);
+        //En caso de no encontrar el género o la serie que contenga ese género procede a:
+        if (animes.isEmpty()) {
+            System.out.println("No hay Series Con ese Genero");
+        } else {
+            System.out.println("Categoría: " + genero);
+            animes.forEach(an -> System.out.println("\n|----------------------------------------------|\n" + an.getImages() + "\n" + an.getTitulo()));
+        }
+    }
+
 }

@@ -85,7 +85,7 @@ public AnimeSerie(){
 
 }
 
-    public AnimeSerie(DatosAnime datosAnime ) {
+    public AnimeSerie(DatosAnime datosAnime) {
         this.idAnime = datosAnime.idAnime();
         this.titulo = datosAnime.titulo();
         this.tituloIngles = datosAnime.tituloIngles();
@@ -100,6 +100,7 @@ public AnimeSerie(){
         this.temporada = datosAnime.temporada();
         this.ano = datosAnime.ano();
         this.nEpisodios = datosAnime.nEpisodios();
+
     }
 
     public void DatosExtras(Videos urlVideo, Imagenes images, List<Fechas> fecha, List<Studios> studio, List<Licenciado> licenciado, List<Productores> productores) {
@@ -119,6 +120,9 @@ public AnimeSerie(){
 
     public void setImages(Imagenes images) {
         this.images = images;
+        if (images != null) {
+            images.setAnime(this); // Esto asegura la relación bidireccional
+        }
     }
 
     public Videos getUrlVideo() {
@@ -250,34 +254,35 @@ public AnimeSerie(){
         this.episodios = episodios;
     }
 
-    @Override
-    public String toString() {
-        return "----------------------------------------------------------------------\n" +
-                "AnimeSerie{" +
-                "\nidAnime= " + idAnime +
-                "\nimages= " + images +
-                "\nurlVideo= " + urlVideo +
-                "\ntitulo= " + titulo  +
-                ", tituloIngles= " + tituloIngles  +
-                ", tituloJapones= " + tituloJapones +
-                "\ntipo= " + tipo  +
-                "\nfuente= " + fuente  +
-                "\nnEpisodios= " + nEpisodios +
-                "\nstatus= " + status +
-                "\nfecha= " + fecha +
-                "\nduracion= " + duracion +
-                "\nrating= " + rating +
-                "\npuntaje= " + puntaje +
-                "\ntemporada= " + temporada +
-                "\naño= " + ano +
-                "\nproductores= " + productores +
-                "\nlicenciado= " + licenciado +
-                "\nstudio= " + studio +
-                "\ngenero= " + genero +
-                "\nepisodios= " + episodios +
-                "\nsinopsis= " + sinopsis +
-                "}" +
+        @Override
+        public String toString() {
+            return "----------------------------------------------------------------------\n" +
+                    "AnimeSerie{" +
+                    "\nidAnime= " + idAnime +
+                    "\nimages= " + images +
+                    "\nurlVideo= " + urlVideo +
+                    "\ntitulo= " + titulo +
+                    ", tituloIngles= " + tituloIngles +
+                    ", tituloJapones= " + tituloJapones +
+                    "\ntipo= " + tipo +
+                    "\nfuente= " + fuente +
+                    "\nnEpisodios= " + nEpisodios +
+                    "\nstatus= " + status +
+                    "\nfecha= " + fecha +
+                    "\nduracion= " + duracion +
+                    "\nrating= " + rating +
+                    "\npuntaje= " + puntaje +
+                    "\ntemporada= " + temporada +
+                    "\naño= " + ano +
+                    "\nproductores= " + productores +
+                    "\nlicenciado= " + licenciado +
+                    "\nstudio= " + studio +
+                    "\ngenero= " + genero +
+                    "\nepisodios= " + episodios +
+                    "\nsinopsis= " + sinopsis +
+                    "}" +
 
-                "\n--------------------------------------------------------------------";
+                    "\n--------------------------------------------------------------------";
+        }
     }
-}
+

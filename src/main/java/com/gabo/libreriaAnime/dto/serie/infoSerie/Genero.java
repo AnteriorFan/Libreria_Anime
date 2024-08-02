@@ -1,5 +1,8 @@
 package com.gabo.libreriaAnime.dto.serie.infoSerie;
 
+import java.text.Normalizer;
+import java.util.Locale;
+
 public enum Genero {
     COMEDIA("Comedy", "Comedia"),
     AVENTURA("Adventure", "Aventura"),
@@ -61,21 +64,41 @@ public enum Genero {
         this.categoriaEspanol = categoriaEspanol;
     }
 
+    //Busca y normaliza el resultado, ejemplo: Acción a accion pero en ingles
     public static Genero fromString(String text) {
+        String normalizedText = normalize(text);
         for (Genero categoria : Genero.values()) {
-            if (categoria.categoriaAnime.equalsIgnoreCase(text)) {
+            if (normalize(categoria.categoriaEspanol).equalsIgnoreCase(normalizedText)) {
                 return categoria;
             }
         }
         throw new IllegalArgumentException("Ninguna categoria encontrada: " + text);
     }
 
+    //Busca y normaliza el resultado, ejemplo: Acción a accion
     public static Genero fromEspanol(String text) {
+        String normalizedText = normalize(text);
         for (Genero categoria : Genero.values()) {
-            if (categoria.categoriaEspanol.equalsIgnoreCase(text)) {
+            if (normalize(categoria.categoriaAnime).equalsIgnoreCase(normalizedText)) {
                 return categoria;
             }
         }
         throw new IllegalArgumentException("Ninguna categoria encontrada: " + text);
+    }
+
+    //Normaliza la busqueda por medio de fases, ejemplo: Acción a accion
+    private static String normalize(String text) {
+        //En esta forma, los caracteres acentuados se descomponen en su carácter base y su acento.
+        //      Por ejemplo, "á" se descompondría en "a" y el acento agudo.
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
+
+                // Este método utiliza una expresión regular para eliminar todos los caracteres diacríticos
+                //      (los acentos y otros signos que se pueden añadir a las letras).
+                .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+
+                //Convierte el texto resultante a minúsculas utilizando Locale.ROOT
+                //          para asegurar que la conversión se realice de manera consistente
+                //              sin tener en cuenta la localización específica del sistema
+                .toLowerCase(Locale.ROOT);
     }
 }
