@@ -278,7 +278,6 @@ public AnimeSerie(){
                     "\nlicenciado= " + licenciado +
                     "\nstudio= " + studio +
                     "\ngenero= " + genero +
-                    "\nepisodios= " + episodios +
                     "\nsinopsis= " + sinopsis +
                     "}" +
 

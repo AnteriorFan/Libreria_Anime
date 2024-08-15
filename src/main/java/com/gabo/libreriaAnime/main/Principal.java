@@ -1,6 +1,9 @@
 package com.gabo.libreriaAnime.main;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gabo.libreriaAnime.dto.serie.episodes.DatosEpisodesResult;
+import com.gabo.libreriaAnime.dto.serie.episodes.DatosEpisodios;
 import com.gabo.libreriaAnime.dto.serie.infoSerie.Datos;
 import com.gabo.libreriaAnime.dto.serie.infoSerie.DatosAnime;
 import com.gabo.libreriaAnime.dto.serie.infoSerie.Genero;
@@ -12,6 +15,7 @@ import com.gabo.libreriaAnime.service.ConvierteDatos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,22 +24,23 @@ public class Principal {
     private final Scanner teclado;
     private  final ConvierteDatos convierteDatos;
     private final ConsumoAPI consumoApi = new ConsumoAPI();
-    private final  String URL_BASE =  "https://api.jikan.moe/v4/anime?q=";
+    private final  String URL_BASE =  "https://api.jikan.moe/v4/anime";
     private final SerieRepository repository;
     private final GeneroRepository generoRepository;
-    private List<AnimeSerie> a;
+    private  List<AnimeSerie> a;
 
-    // Uso de @Autowired facilita la gestión de depedencias por medio del contructor
+    // Uso de @Autowired facilita la gestión de dependencias por medio del constructor
     @Autowired
-    public Principal(ObjectMapper objectMapper, SerieRepository repository, GeneroRepository generoRepository) {
+    public Principal(ObjectMapper objectMapper, SerieRepository repository, GeneroRepository generoRepository, List<AnimeSerie> a) {
         this.repository = repository;
         this.generoRepository = generoRepository;
+        this.a = a;
         this.teclado = new Scanner(System.in);
         this.convierteDatos = new ConvierteDatos(objectMapper);
     }
 
 
-    public void main(){
+    public void menu(){
         System.out.println("Que serie buscar");
         var opc = -1;
 
@@ -95,7 +100,7 @@ public class Principal {
     private DatosAnime getDatosSerie(){
         System.out.println("\n ->> NOMBRE DEL ANIME <<-\n");
         String tituloAnime = teclado.nextLine();
-        String json = String.valueOf(consumoApi.obtenerDatos("https://api.jikan.moe/v4/anime?q=" + tituloAnime.replace(" ", "%20")));
+        String json = String.valueOf(consumoApi.obtenerDatos(URL_BASE+ "?q=" + tituloAnime.replace(" ", "%20")));
         Datos datos = convierteDatos.obtenerDatos(json, Datos.class);
 
         return datos != null && datos.resultados() != null && !datos.resultados().isEmpty() ? datos.resultados().get(0) : null;
@@ -142,12 +147,12 @@ public class Principal {
             aS.setProductores(productores);
 
             // Creación y Asignación de Licenciados
-            List<Licenciado> licenciados = datos.licenciado().stream().map(l -> new Licenciado(l)).collect(Collectors.toList());
+            List<Licenciado> licenciados = datos.licenciado().stream().map(Licenciado::new).collect(Collectors.toList());
             licenciados.forEach(l -> l.setAnime(aS));
            aS.setLicenciado(licenciados);
 
             // Creación y Asignación de Studios
-            List<Studios> estudios = datos.studio().stream().map(s -> new Studios(s)).collect(Collectors.toList());
+            List<Studios> estudios = datos.studio().stream().map(Studios::new).collect(Collectors.toList());
             estudios.forEach(s -> s.setAnime(aS));
             aS.setStudio(estudios);
 
@@ -161,7 +166,50 @@ public class Principal {
 
     //BUSCA LOS EPISODIOS POR MEDIO DE LAS SERIES BUSCADAS
     private void buscarEpisodio() {
+        try {
+            //Busca y Recupera las series por la base de datos
+            List<AnimeSerie> series = repository.findAll();
+            //Si no se encuentra, saldría un mensaje
+            if (series.isEmpty()) {
+                System.out.println("No hay series registradas.");
+                return;
+            }
 
+            System.out.println("\n[*** SERIES REGISTRADAS ***]");
+            series.forEach(s -> System.out.println("\n--> "+ s.getTitulo()));
+            System.out.println("\n*** ESCRIBE EL NOMBRE DE LA SERIE *** ");
+            String nombreSerie = teclado.nextLine();
+        //Hace la comparación de la búsqueda con la serie que se encuentra en la base de datos y se hace la comparación
+            Optional<AnimeSerie> serie = series.stream().filter(as ->
+                    as.getTitulo().toLowerCase().contains(nombreSerie.toLowerCase())).findFirst();
+
+            System.out.println("Serie encontrada: " + (serie.isPresent() ? "Sí" : "No"));
+            //Si la serie está presente.
+            if (serie.isPresent()){
+                var serieFound = serie.get();
+
+                // Verifica si ya existen episodios para la serie en la base de datos
+                if (!serieFound.getEpisodios().isEmpty()) {
+                    System.out.println("Episodios ya registrados para esta serie.");
+                    return; // Sale del método para evitar duplicados
+                }
+                List<DatosEpisodesResult> episodes = new ArrayList<>();
+                //Buscara el id del anim, ya que la búsqueda del API, se basa en el id del anime
+                String json = String.valueOf(consumoApi.obtenerDatos(URL_BASE+"/" + serieFound.getIdAnime() + "/episodes"));
+                DatosEpisodios datosEpisodes = convierteDatos.obtenerDatos(json, DatosEpisodios.class);
+                //Se añadira al List<DatosEpisodesResult>
+                episodes.addAll(datosEpisodes.dataEpisodes());
+                episodes.forEach(System.out::println);
+                //Dada a la lista creada, buscaremos y acomodaremos la busqueda por medio de la configuracion creada en la clase Episodios
+                List<Episodios> epi = episodes.stream().map((d) -> new Episodios(d, serieFound)).toList();
+                epi.forEach(a -> System.out.println("\nn.episodio: "+a.getIdEpisode()+"\nAnime: "+a.getAnime().getTitulo() +"\nNombre del Episodio: "+a.getTitulo()+"\nCali: "+a.getCalificacionEpisode()));
+                //Se enviará la configuracion y se guardará por el anime buscado en la BD
+                serieFound.setEpisodios(epi);
+                repository.save(serieFound);
+            }
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error inesperado: " + e.getMessage());
+        }
     }
 
     //DEVUELVE LAS SERIES QUE FUERON BUSCADAS Y GUARDADAS POR LA BASE DE DATOS
@@ -185,7 +233,7 @@ public class Principal {
         String genero = teclado.nextLine();
         Genero categoria;
 
-        //Usa un try-catch para buscar los genero y so no encuantra el genero saldra un mesnaje
+        //Usa un try-catch para buscar los genero y so no encuentra el género, saldría un mensaje
         try {
             categoria = Genero.fromEspanol(genero);
         } catch (IllegalArgumentException e) {

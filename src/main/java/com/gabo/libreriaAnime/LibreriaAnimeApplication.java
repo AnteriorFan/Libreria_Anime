@@ -21,7 +21,7 @@ public class LibreriaAnimeApplication implements CommandLineRunner {
 	}
 	@Override
 	public void run(String... args) throws Exception {
-		principal.main();
+		principal.menu();
 	}
 
 }
